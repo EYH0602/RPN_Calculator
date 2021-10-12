@@ -1,6 +1,5 @@
 module SimpleRPN where
 
-import Foreign.C (CIntMax (CIntMax))
 import Lexer (Token (..), lexer)
 
 -- data
@@ -35,13 +34,13 @@ parse (x : xs) = case x of
 calculate :: Expr -> Double
 calculate ENull = 0
 calculate (ENum a) = a
-calculate (EAdd expr1 expr2) = (+) (calculate expr1) (calculate expr2)
-calculate (EMult expr1 expr2) = (*) (calculate expr1) (calculate expr2)
-calculate (ESubtr expr1 expr2) = (-) (calculate expr1) (calculate expr2)
-calculate (EDiv expr1 expr2) = (/) (calculate expr1) (calculate expr2)
-calculate (EPow expr1 expr2) = (**) (calculate expr1) (calculate expr2)
 calculate (EFloor expr) = (fromIntegral . floor . calculate) expr
 calculate (ECeil expr) = (fromIntegral . ceiling . calculate) expr
+calculate (EAdd expr1 expr2) = calculate expr1 + calculate expr2
+calculate (EMult expr1 expr2) = calculate expr1 * calculate expr2
+calculate (ESubtr expr1 expr2) = calculate expr1 - calculate expr2
+calculate (EDiv expr1 expr2) = calculate expr1 / calculate expr2
+calculate (EPow expr1 expr2) = calculate expr1 ** calculate expr2
 
 rpn :: String -> Double
 rpn = calculate . fst . parse . reverse . lexer
