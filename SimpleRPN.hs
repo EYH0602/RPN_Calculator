@@ -47,18 +47,6 @@ rpn = calculate . getExpr
 getExpr :: String -> Expr
 getExpr = fst . parse . reverse . lexer
 
-getExprStr :: Expr -> String
-getExprStr expr = case expr of
-  ENum x -> show x
-  EAdd ex ex' -> "+"
-  EMult ex ex' -> "*"
-  ESubtr ex ex' -> "-"
-  EDiv ex ex' -> "/"
-  EPow ex ex' -> "**"
-  EFloor ex -> "<"
-  ECeil ex -> ">"
-  ENull -> ""
-
 instance Show Expr where
   show = expr2str 0
 
