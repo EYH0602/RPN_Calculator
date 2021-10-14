@@ -1,4 +1,4 @@
-module SimpleRPN (Expr (..), parse, calculate, expr2str, rpn, getExpr) where
+module SimpleRPN (Expr (..), parse, calculate, rpn, getExpr) where
 
 import Lexer (Token (..), lexer)
 
@@ -60,22 +60,19 @@ getExprStr expr = case expr of
   ENull -> ""
 
 instance Show Expr where
-  show = expr2str
+  show = expr2str 0
 
 indent :: Int -> String
 indent 0 = ""
 indent n = "  " ++ indent (n - 1)
 
-expr2str :: Expr -> String
-expr2str ex = expr2str' ex 0
-
-expr2str' :: Expr -> Int -> String
-expr2str' ENull _ = ""
-expr2str' (ENum x) n = indent n ++ show x ++ "\n"
-expr2str' (EAdd ex ex') n = indent n ++ "(+\n" ++ expr2str' ex (n + 1) ++ expr2str' ex' (n + 1) ++ indent n ++ ")\n"
-expr2str' (EMult ex ex') n = indent n ++ "(*\n" ++ expr2str' ex (n + 1) ++ expr2str' ex' (n + 1) ++ indent n ++ ")\n"
-expr2str' (ESubtr ex ex') n = indent n ++ "(-\n" ++ expr2str' ex (n + 1) ++ expr2str' ex' (n + 1) ++ indent n ++ ")\n"
-expr2str' (EDiv ex ex') n = indent n ++ "(/\n" ++ expr2str' ex (n + 1) ++ expr2str' ex' (n + 1) ++ indent n ++ ")\n"
-expr2str' (EPow ex ex') n = indent n ++ "(**\n" ++ expr2str' ex (n + 1) ++ expr2str' ex' (n + 1) ++ indent n ++ ")\n"
-expr2str' (EFloor ex) n = indent n ++ "(<\n" ++ expr2str' ex (n + 1) ++ indent n ++ ")\n"
-expr2str' (ECeil ex) n = indent n ++ "(>\n" ++ expr2str' ex (n + 1) ++ indent n ++ ")\n"
+expr2str :: Int -> Expr -> String
+expr2str _ ENull = ""
+expr2str n (ENum x) = indent n ++ show x ++ "\n"
+expr2str n (EAdd ex ex') = indent n ++ "(+\n" ++ expr2str (n + 1) ex ++ expr2str (n + 1) ex' ++ indent n ++ ")\n"
+expr2str n (EMult ex ex') = indent n ++ "(*\n" ++ expr2str (n + 1) ex ++ expr2str (n + 1) ex' ++ indent n ++ ")\n"
+expr2str n (ESubtr ex ex') = indent n ++ "(-\n" ++ expr2str (n + 1) ex ++ expr2str (n + 1) ex' ++ indent n ++ ")\n"
+expr2str n (EDiv ex ex') = indent n ++ "(/\n" ++ expr2str (n + 1) ex ++ expr2str (n + 1) ex' ++ indent n ++ ")\n"
+expr2str n (EPow ex ex') = indent n ++ "(**\n" ++ expr2str (n + 1) ex ++ expr2str (n + 1) ex' ++ indent n ++ ")\n"
+expr2str n (EFloor ex) = indent n ++ "(<\n" ++ expr2str (n + 1) ex ++ indent n ++ ")\n"
+expr2str n (ECeil ex) = indent n ++ "(>\n" ++ expr2str (n + 1) ex ++ indent n ++ ")\n"
